@@ -18,20 +18,20 @@ public class Relative {
     private String name;
     private String phone;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User caller;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Relative(){}
 
     public Relative(String name, String phone, User user){
-        this.caller = user;
+        this.user = user;
         this.name = name;
         this.phone = phone;
     }
 
-    public String getCallerName(){
-        return caller != null ? caller.getUsername() : "<none>";
+    public String getUserName(){
+        return user != null ? user.getUsername() : "<none>";
     }
 
     public Long getId() {
@@ -58,12 +58,12 @@ public class Relative {
         this.phone = phone;
     }
 
-    public User getCaller() {
-        return caller;
+    public User getUser() {
+        return user;
     }
 
-    public void setCaller(User caller) {
-        this.caller = caller;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

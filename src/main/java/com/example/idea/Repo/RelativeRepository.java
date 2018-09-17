@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface RelativeRepository extends CrudRepository<Relative, Long> {
     List<Relative> findByName(String name);
+
+    List<Relative> findByUserId(Long id);
+
+    List<Relative> findByNameAndUserId(String name, Long id);
 }

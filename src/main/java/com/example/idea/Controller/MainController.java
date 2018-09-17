@@ -29,13 +29,14 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
+    public String main(@AuthenticationPrincipal User user,
+                       @RequestParam(required = false, defaultValue = "") String filter, Model model) {
         Iterable<Relative> relatives;
 
         if (filter != null && !filter.isEmpty()) {
-            relatives = relativeRepository.findByName(filter);
+            relatives = relativeRepository.findByNameAndUserId(filter, user.getId());
         } else {
-            relatives = relativeRepository.findAll();
+            relatives = relativeRepository.findByUserId(user.getId());
         }
 
         model.addAttribute("relatives", relatives);

@@ -37,12 +37,9 @@
                 <span>${relative.name}</span>
                 <i>${relative.phone}</i>
             </div>
-            <div class="card-footer text-muted">
-                ${relative.callerName}
-            </div>
         </div>
     <#else>
-    No message
+    No relatives
     </#list>
 </div>
 </@c.page>

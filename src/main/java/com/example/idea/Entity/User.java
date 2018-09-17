@@ -50,6 +50,25 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+    private TelegramBot bot;
+
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+    private Set<Relative> relatives;
+
+    public User(){}
+
+    public User(String username, String password, boolean active, String email) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.email = email;
+    }
+
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
@@ -149,6 +168,14 @@ public class User implements UserDetails {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public TelegramBot getBot() {
+        return bot;
+    }
+
+    public void setBot(TelegramBot bot) {
+        this.bot = bot;
     }
 
     //    public String getPassword2() {

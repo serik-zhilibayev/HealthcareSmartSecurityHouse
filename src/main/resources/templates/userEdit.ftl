@@ -10,6 +10,8 @@ User editor
         <label><input type="checkbox" name="${role}" ${user.roles?seq_contains(role)?string("checked", "")}>${role}</label>
     </div>
     </#list>
+    <input type="text" name="botName" value="${bot.name}">
+    <input type="text" name="botToken" value="${bot.token}">
     <input type="hidden" value="${user.id}" name="userId">
     <input type="hidden" value="${_csrf.token}" name="_csrf">
     <button type="submit">Save</button>

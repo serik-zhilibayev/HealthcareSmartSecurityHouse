@@ -1,13 +1,14 @@
 package com.example.idea.Service;
 
 import com.example.idea.Entity.Role;
+import com.example.idea.Entity.TelegramBot;
 import com.example.idea.Entity.User;
+import com.example.idea.Repo.BotRepository;
 import com.example.idea.Repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,11 +17,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private MailSender mailSender;
+
+    @Autowired
+    private BotRepository botRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,11 +43,15 @@ public class UserService implements UserDetailsService {
         if (userFromDb != null) {
             return false;
         }
+
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
-        userRepository.save(user);
 
+        TelegramBot bot = new TelegramBot("", "");
+        user.setBot(bot);
+        bot.setUser(user);
+        userRepository.save(user);
         sendMessage(user);
         return true;
     }
@@ -75,7 +84,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public void saveUser(User user, String username, Map<String, String> form) {
+    public void saveUser(User user, String username, Map<String, String> form, String botName, String botToken) {
         user.setUsername(username);
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
@@ -86,8 +95,13 @@ public class UserService implements UserDetailsService {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
-
+        TelegramBot bot = botRepository.findByUserId(user.getId());
+        if (botName != null && !botName.equals(""))
+            bot.setName(botName);
+        if (botToken != null && !botToken.equals(""))
+            bot.setToken(botToken);
         userRepository.save(user);
+        botRepository.save(bot);
     }
 
     public void updateProfile(User user, String password, String email, String name, String surname) {
