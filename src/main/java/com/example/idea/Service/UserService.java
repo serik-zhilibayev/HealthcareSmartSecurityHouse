@@ -90,7 +90,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void updateProfile(User user, String password, String email) {
+    public void updateProfile(User user, String password, String email, String name, String surname) {
         String userEmail = user.getEmail();
 
         boolean isEmailChanged = (email != null && !email.equals(userEmail)) ||
@@ -103,8 +103,13 @@ public class UserService implements UserDetailsService {
                 user.setActivationCode(UUID.randomUUID().toString());
             }
         }
-
-        if (StringUtils.isEmpty(password)){
+        if (!name.equals("") && name != null){
+            user.setName(name);
+        }
+        if (!surname.equals("") && surname != null){
+            user.setSurname(surname);
+        }
+        if (!password.equals("") && password != null){
             user.setPassword(password);
         }
         userRepository.save(user);

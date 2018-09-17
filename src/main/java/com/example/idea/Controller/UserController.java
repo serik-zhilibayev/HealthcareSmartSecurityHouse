@@ -55,15 +55,17 @@ public class UserController {
     public String getProfile(Model model, @AuthenticationPrincipal User user){
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
+        model.addAttribute("name", user.getName());
+        model.addAttribute("surname", user.getSurname());
         return "profile";
     }
 
     @PostMapping("profile")
     public String updateProfile(@AuthenticationPrincipal User user,
-                                @RequestParam String password,
-                                @RequestParam String email){
+                                @RequestParam String password, @RequestParam String email,
+                                @RequestParam String name, @RequestParam String surname){
 
-        userService.updateProfile(user, password, email);
+        userService.updateProfile(user, password, email, name, surname);
         return "redirect:/user/profile";
     }
 }
